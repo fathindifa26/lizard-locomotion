@@ -45,6 +45,11 @@ def init():
     angle_text.set_text("")
     return point1, point2, point3, line1, line2, horizontal_line, zero_degree_line, angle_text
 
+
+# Inisialisasi list untuk menyimpan data adjusted
+adjusted_data = []
+
+
 def update(frame):
     """Fungsi untuk memperbarui animasi setiap frame."""
     time_now = frame / 30  # Asumsi 30 FPS
@@ -116,6 +121,23 @@ def update(frame):
     ext_y = adjusted_y2 + unit_vector_y * extension_length
     
     zero_degree_line.set_data_3d([adjusted_x2, ext_x], [adjusted_y2, ext_y], [z2, z2])
+
+    # PERUBAHAN: Simpan data yang telah di-adjust ke dalam list
+    adjusted_data.append({
+        'frame': frame,
+        'time': time_now,
+        'fixed_x1': fixed_x1,
+        'fixed_y1': fixed_y1,
+        'adjusted_x2': adjusted_x2,
+        'adjusted_y2': adjusted_y2,
+        'adjusted_x3': adjusted_x3,
+        'adjusted_y3': adjusted_y3,
+        'z1': z1,
+        'z2': z2,
+        'z3': z3,
+        'angle1': angle1,
+        'angle2': angle2
+    })
     
     return point1, point2, point3, line1, line2, horizontal_line, zero_degree_line, angle_text
 
@@ -132,4 +154,8 @@ ani = FuncAnimation(
 plt.show()
 
 # Simpan semua data ke CSV setelah animasi selesai
-# pd.DataFrame(data_frames).to_csv("final_keypoints.csv", index=False)
+
+# Konversi list ke DataFrame dan simpan
+adjusted_df = pd.DataFrame(adjusted_data)
+adjusted_df.to_csv('final_keypoints.csv', index=False)
+print("Data animasi telah disimpan ke final_keypoints.csv")
